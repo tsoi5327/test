@@ -1,1 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Copperwound — Handbuilt guitars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Design tokens ----------
+  Background   #201510  (deep walnut)
+  Panel        #2B1D14  (wood panel)
+  Panel light  #3A281B
+  Brass        #C89B4A
+  Ember        #D9713C
+  Cream        #F3E9D8
+  Muted        #A6906F
+  Display font: Fraunces (warm variable serif)
+  Body font:    Inter
+  Mono/spec:    IBM Plex Mono
+  Signature:    six horizontal "string" lines (thickness = string gauge) used
+                as dividers throughout — literally the thing that makes a guitar.
+  ------------------------------------ */
+  :root{
+    --bg:#201510; --panel:#2B1D14; --panel-light:#3A281B;
+    --brass:#C89B4A; --ember:#D9713C; --cream:#F3E9D8; --muted:#A6906F; --body-text:#C9B79A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .font-display{font-family:'Fraunces',serif;font-optical-sizing:auto;}
+  .font-mono{font-family:'IBM Plex Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  a{color:inherit;text-decoration:none;}
+  svg{display:block;}
+  .container{max-width:1280px;margin:0 auto;padding:0 24px;}
+  @media(min-width:768px){.container{padding:0 40px;}}
+
+  button:focus-visible, a:focus-visible{outline:2px solid var(--ember);outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+
+  .grain-card{background:linear-gradient(160deg, var(--panel) 0%, #241811 100%);}
+  .btn-brass{transition:transform .15s ease, background .15s ease;}
+  .btn-brass:hover{transform:translateY(-1px);}
+  .card-hover{transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+  .card-hover:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(0,0,0,0.6);}
+  .drawer-slide{transition:transform .3s ease;}
+
+  /* ---- header ---- */
+  header.site{position:sticky;top:0;z-index:40;background:rgba(32,21,16,0.92);backdrop-filter:blur(6px);}
+  .header-inner{height:80px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-size:24px;letter-spacing:-0.01em;color:var(--cream);}
+  @media(min-width:768px){.logo{font-size:30px;}}
+  nav.primary{display:none;align-items:center;gap:32px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+  @media(min-width:768px){nav.primary{display:flex;}}
+  nav.primary a:hover{color:var(--cream);}
+  .cart-btn{position:relative;display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
+            background:var(--brass);color:var(--bg);font-size:12px;text-transform:uppercase;letter-spacing:.12em;border:none;}
+  .cart-badge{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:var(--ember);
+              color:var(--bg);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+
+  /* ---- string divider (signature) ---- */
+  .string-divider{width:100%;display:flex;flex-direction:column;gap:3px;padding:8px 0;}
+  .string-divider div{width:100%;}
+
+  /* ---- hero ---- */
+  .hero{padding:56px 0 64px;}
+  @media(min-width:768px){.hero{padding:80px 0 64px;}}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+  @media(min-width:768px){.hero-grid{grid-template-columns:1fr 1fr;}}
+  .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.25em;color:var(--ember);margin:0 0 20px;}
+  h1.hero-title{font-size:44px;line-height:1.05;margin:0 0 24px;color:var(--cream);}
+  @media(min-width:768px){h1.hero-title{font-size:60px;}}
+  .hero-sub{font-size:17px;color:var(--body-text);max-width:420px;margin:0 0 32px;}
+  .hero-ctas{display:flex;align-items:center;gap:16px;margin-bottom:40px;flex-wrap:wrap;}
+  .btn-pill{padding:12px 24px;border-radius:999px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;border:none;display:inline-block;}
+  .btn-ember{background:var(--ember);color:var(--bg);}
+  .btn-outline{background:transparent;color:var(--cream);border:1px solid var(--panel-light);}
+  .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:260px;}
+  .hero-glow{position:absolute;width:280px;height:280px;border-radius:50%;filter:blur(60px);
+            background:radial-gradient(circle, rgba(217,113,60,0.25), transparent 70%);}
+  @media(min-width:768px){.hero-glow{width:384px;height:384px;}}
+  .hero-visual svg{position:relative;width:224px;}
+  @media(min-width:768px){.hero-visual svg{width:288px;}}
+
+  /* ---- shop ---- */
+  .section{padding:40px 0;}
+  .section-head-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;}
+  h2.section-title{font-size:30px;margin:0;color:var(--cream);}
+  @media(min-width:768px){h2.section-title{font-size:36px;}}
+  .pill-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .pill{padding:8px 16px;border-radius:999px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;border:1px solid var(--panel-light);
+       background:transparent;color:var(--muted);transition:color .15s ease, background .15s ease;}
+  .pill.active{background:var(--brass);color:var(--bg);border-color:var(--brass);}
+
+  .product-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+  @media(min-width:640px){.product-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(min-width:1024px){.product-grid{grid-template-columns:repeat(4,1fr);}}
+  .product-card{border-radius:16px;padding:20px;display:flex;flex-direction:column;border:1px solid var(--panel-light);}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .tag-mono{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+  .price-chip{font-size:10px;padding:4px 8px;border-radius:999px;background:rgba(200,155,74,0.15);color:var(--brass);}
+  .card-icon{display:flex;align-items:center;justify-content:center;padding:24px 0;}
+  .card-icon svg{width:112px;height:112px;}
+  .card-title{font-size:20px;margin:0 0 4px;color:var(--cream);}
+  .card-blurb{font-size:14px;margin:0 0 4px;color:var(--body-text);}
+  .card-wood{font-size:11px;margin:0 0 16px;color:var(--muted);}
+  .add-cart-btn{margin-top:auto;width:100%;padding:10px 0;border-radius:999px;font-size:12px;text-transform:uppercase;
+               letter-spacing:.12em;border:none;background:var(--panel-light);color:var(--cream);}
+  .add-cart-btn:hover{background:var(--brass);color:var(--bg);}
+
+  /* ---- craft / process ---- */
+  .craft-intro{max-width:560px;margin-bottom:40px;}
+  .craft-intro h2{font-size:30px;margin:0 0 12px;color:var(--cream);}
+  @media(min-width:768px){.craft-intro h2{font-size:36px;}}
+  .craft-intro p{color:var(--body-text);margin:0;}
+  .process-grid{display:grid;grid-template-columns:1fr;gap:24px;}
+  @media(min-width:768px){.process-grid{grid-template-columns:repeat(5,1fr);}}
+  .process-step{position:relative;padding-left:4px;}
+  .process-step .n{font-size:30px;display:block;margin-bottom:12px;color:var(--panel-light);}
+  .process-step h3{font-size:18px;margin:0 0 8px;color:var(--cream);}
+  .process-step p{font-size:14px;margin:0;color:var(--muted);}
+
+  /* ---- trust ---- */
+  .trust-grid{display:grid;grid-template-columns:1fr;gap:32px;padding:56px 0;}
+  @media(min-width:640px){.trust-grid{grid-template-columns:repeat(3,1fr);}}
+  .trust-item .head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .trust-item h4{font-size:18px;margin:0;color:var(--cream);}
+  .trust-item p{font-size:14px;margin:0;color:var(--muted);}
+
+  /* ---- footer ---- */
+  footer.site{padding:40px 0 56px;}
+  .footer-row{display:flex;flex-direction:column;justify-content:space-between;gap:24px;margin-top:32px;}
+  @media(min-width:768px){.footer-row{flex-direction:row;}}
+  .footer-row .brand p{font-size:14px;color:var(--muted);max-width:280px;margin:8px 0 0;}
+  .footer-links{display:flex;gap:32px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+  .footer-links a:hover{color:var(--cream);}
+  .copyright{font-size:10px;color:#4A3A2A;margin-top:40px;}
+
+  /* ---- cart drawer ---- */
+  .drawer-overlay{position:fixed;inset:0;z-index:50;display:none;justify-content:flex-end;}
+  .drawer-overlay.open{display:flex;}
+  .drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.55);}
+  .drawer{position:relative;width:100%;max-width:384px;height:100%;display:flex;flex-direction:column;
+         background:var(--bg);border-left:1px solid var(--panel-light);transform:translateX(100%);}
+  .drawer-overlay.open .drawer{transform:translateX(0);}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--panel-light);}
+  .drawer-head h3{font-size:20px;margin:0;color:var(--cream);}
+  .drawer-body{flex:1;overflow-y:auto;padding:16px 24px;}
+  .drawer-empty{font-size:14px;color:var(--muted);text-align:center;margin-top:32px;}
+  .drawer-item{display:flex;gap:16px;align-items:center;margin-bottom:20px;}
+  .drawer-item .thumb{width:64px;height:64px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+                      background:linear-gradient(160deg, var(--panel) 0%, #241811 100%);}
+  .drawer-item .thumb svg{width:40px;height:40px;}
+  .drawer-item .info{flex:1;min-width:0;}
+  .drawer-item .info p.name{font-size:16px;margin:0;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Fraunces',serif;}
+  .drawer-item .info p.unit{font-size:12px;margin:2px 0 8px;color:var(--muted);}
+  .qty-control{display:flex;align-items:center;gap:12px;}
+  .qty-control button{background:none;border:none;padding:2px;}
+  .qty-control span{font-size:12px;width:16px;text-align:center;}
+  .drawer-foot{padding:20px 24px;border-top:1px solid var(--panel-light);}
+  .drawer-total{display:flex;justify-content:space-between;font-size:14px;margin-bottom:16px;}
+  .drawer-total span:first-child{color:var(--muted);}
+  .checkout-btn{width:100%;padding:12px 0;border-radius:999px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;
+               border:none;background:var(--ember);color:var(--bg);}
+
+  /* ---- toast ---- */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);padding:12px 20px;border-radius:999px;
+        background:var(--cream);color:var(--bg);font-size:12px;z-index:60;opacity:0;pointer-events:none;
+        transition:opacity .2s ease, transform .2s ease;box-shadow:0 12px 24px rgba(0,0,0,.25);}
+  #toast.show{opacity:1;transform:translate(-50%,0);}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container header-inner">
+    <span class="font-display logo">Copperwound</span>
+    <nav class="primary font-mono">
+      <a href="#shop">Shop</a>
+      <a href="#craft">Craft</a>
+      <a href="#footer">Contact</a>
+    </nav>
+    <button class="cart-btn font-mono btn-brass" onclick="openCart()" aria-label="Open cart">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Cart
+      <span class="cart-badge font-mono" id="cart-badge" style="display:none;">0</span>
+    </button>
+  </div>
+  <div class="container"><div class="string-divider" id="header-strings"></div></div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow font-mono">Est. bench-built, one at a time</p>
+      <h1 class="hero-title font-display">Every note starts<br />with the wood.</h1>
+      <p class="hero-sub">Copperwound builds acoustic, electric, and bass guitars by hand in small batches. No factory line, no shortcuts — just wood, wire, and a plane.</p>
+      <div class="hero-ctas">
+        <a href="#shop" class="btn-pill btn-ember font-mono btn-brass">Shop the lineup</a>
+        <a href="#craft" class="btn-pill btn-outline font-mono btn-brass">How we build</a>
+      </div>
+      <div class="string-divider" id="hero-strings-2"></div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div id="hero-guitar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Shop -->
+<section id="shop" class="section container">
+  <div class="section-head-row">
+    <h2 class="section-title font-display">The lineup</h2>
+    <div class="pill-row font-mono" id="category-pills"></div>
+  </div>
+  <div class="product-grid" id="product-grid"></div>
+</section>
+
+<!-- Craft -->
+<section id="craft" class="section container" style="padding-top:80px;padding-bottom:80px;">
+  <div class="craft-intro">
+    <h2 class="font-display">Five steps, no shortcuts</h2>
+    <p>Each Copperwound guitar passes through the same five stages on the bench, in this order, before it ever leaves the shop.</p>
+  </div>
+  <div class="process-grid" id="process-grid"></div>
+</section>
+
+<div class="container"><div class="string-divider" id="mid-strings"></div></div>
+
+<!-- Trust -->
+<section class="container trust-grid" id="trust-grid"></section>
+
+<!-- Footer -->
+<footer id="footer" class="site">
+  <div class="container">
+    <div class="string-divider" id="footer-strings"></div>
+    <div class="footer-row">
+      <div class="brand">
+        <span class="font-display" style="font-size:24px;color:var(--cream);">Copperwound</span>
+        <p>Handbuilt guitars from a small shop that still smells like sawdust.</p>
+      </div>
+      <div class="footer-links font-mono">
+        <a href="#shop">Shop</a>
+        <a href="#craft">Craft</a>
+        <a href="#">Care guide</a>
+        <a href="#">Shipping</a>
+      </div>
+    </div>
+    <p class="copyright font-mono">© 2026 Copperwound Guitar Co. — every serial number tells a story.</p>
+  </div>
+</footer>
+
+<!-- Cart drawer -->
+<div class="drawer-overlay" id="drawer-overlay">
+  <div class="drawer-backdrop" onclick="closeCart()"></div>
+  <div class="drawer">
+    <div class="drawer-head">
+      <h3 class="font-display">Your cart</h3>
+      <button onclick="closeCart()" aria-label="Close cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A6906F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+    <div class="drawer-foot" id="drawer-foot" style="display:none;">
+      <div class="drawer-total font-mono">
+        <span>Total</span>
+        <span id="drawer-total-value" style="color:var(--cream);"></span>
+      </div>
+      <button class="checkout-btn font-mono btn-brass" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+/* ---------- data ---------- */
+const PRODUCTS = [
+  { id:"drifter", name:"The Drifter", type:"Acoustic", shape:"dreadnought", wood:"Solid mahogany / spruce top", price:1850, accent:"#C89B4A", blurb:"A dreadnought built for a front porch and a long night." },
+  { id:"roadhouse", name:"The Roadhouse", type:"Electric", shape:"singlecut", wood:"Mahogany body, maple cap", price:2400, accent:"#D9713C", blurb:"Thick, humbucker-driven, and unbothered by volume." },
+  { id:"lowend-six", name:"Lowend Six", type:"Bass", shape:"bass", wood:"Ash body, maple neck", price:2100, accent:"#8FA07A", blurb:"Punchy low end with room to growl on the bridge pickup." },
+  { id:"parlor-12", name:"The Parlor 12", type:"Acoustic", shape:"parlor", wood:"Spruce top, rosewood back", price:1200, accent:"#C89B4A", blurb:"Small body, big voice — fingerstyle players' favorite." },
+  { id:"copperline", name:"Copperline Custom", type:"Electric", shape:"doublecut", wood:"Swamp ash body, roasted maple neck", price:2850, accent:"#D9713C", blurb:"Single-coil twang with a copper-wound humbucker in the bridge." },
+  { id:"nightcrawler", name:"The Nightcrawler", type:"Electric", shape:"singlecut", wood:"All-mahogany, ebony board", price:3200, accent:"#B0563D", blurb:"Warm, dark, and built for sustain that won't quit." },
+  { id:"highline-5", name:"Highline 5", type:"Bass", shape:"bass", wood:"Alder body, wenge neck", price:2650, accent:"#8FA07A", blurb:"Five strings, wide neck, tuned for players who need the B." },
+  { id:"songwriter", name:"The Songwriter", type:"Acoustic", shape:"dreadnought", wood:"Cedar top, walnut back", price:1650, accent:"#C89B4A", blurb:"Bright and articulate — built for demoing at 2am." },
+];
+const CATEGORIES = ["All", "Acoustic", "Electric", "Bass"];
+const PROCESS = [
+  { n:"01", title:"Select the wood", body:"Every top is tap-tested by hand before it's cut. We reject more wood than we use." },
+  { n:"02", title:"Carve the neck", body:"Shaped on the bench, not the CNC, so it fits a hand instead of a spec sheet." },
+  { n:"03", title:"Fit the joint", body:"A dovetail neck joint, glued dry-fit first. No shims, no gaps." },
+  { n:"04", title:"Finish thin", body:"A hand-rubbed nitro finish thin enough that the wood still breathes." },
+  { n:"05", title:"String and settle", body:"Strung, played in, and left to settle for two weeks before it ships." },
+];
+const TRUST = [
+  { title:"Two-week setup", body:"Every guitar is played in and re-set before it ships to you." },
+  { title:"Lifetime rebalance", body:"Free neck resets and fret dressing for as long as you own it." },
+  { title:"Built to order", body:"Choose your wood pairing — nothing leaves the shop off the rack." },
+];
+const STRING_GAUGES = [1, 1.4, 1.9, 2.5, 3.2, 4];
+
+function formatPrice(n){ return "$" + n.toLocaleString("en-US"); }
+
+/* ---------- string divider (signature) ---------- */
+function stringDividerHTML(tone, opacity){
+  tone = tone || "#C89B4A"; opacity = opacity===undefined ? 0.5 : opacity;
+  return STRING_GAUGES.map((g,i)=>`<div style="height:${g*0.6}px;background:${tone};opacity:${(opacity - i*0.04).toFixed(2)};"></div>`).join("");
+}
+function mountStringDividers(){
+  document.getElementById("header-strings").innerHTML = stringDividerHTML("#3A281B", 0.9);
+  document.getElementById("hero-strings-2").innerHTML = stringDividerHTML("#C89B4A", 0.55);
+  document.getElementById("mid-strings").innerHTML = stringDividerHTML("#3A281B", 0.8);
+  document.getElementById("footer-strings").innerHTML = stringDividerHTML("#C89B4A", 0.4);
+}
+
+/* ---------- guitar mark (signature illustration) ---------- */
+let gradCounter = 0;
+const GUITAR_CONFIGS = {
+  dreadnought: {
+    body: "M60 92 C40 96 34 118 44 138 C34 150 34 172 52 182 C70 194 118 194 138 180 C158 168 158 148 148 136 C160 118 152 96 130 90 C112 84 78 84 60 92 Z",
+    headstock: "M92 4 L108 4 C110 4 111 6 111 8 L111 24 L89 24 L89 8 C89 6 90 4 92 4 Z",
+    neck: { x:92, w:16, yTop:24, yBottom:92 },
+    soundhole: { cx:98, cy:138, r:16 },
+    bridge: { x:84, y:158, w:28, h:5 },
+    tuners: { l:{y0:8,n:3}, r:{y0:8,n:3}, ySpacing:6 },
+    frets: { ys:[30,40,50,60,70,80], x1:90, x2:110 },
+    strings: 6, stringTop: 10,
+    stringBottom: { y:158, spread:[82,88,94,100,106,112] },
+    viewBox: "0 0 200 210",
+  },
+  singlecut: {
+    body: "M56 96 C38 104 36 128 50 142 C40 156 44 176 66 186 C90 196 134 192 150 172 C162 156 158 130 142 118 C150 100 132 84 108 84 C88 84 68 88 56 96 Z",
+    headstock: "M90 4 L110 4 C112 4 113 6 112 8 L108 24 L92 24 L88 8 C87 6 88 4 90 4 Z",
+    neck: { x:92, w:16, yTop:24, yBottom:96 },
+    pickups: [ {x:82,y:118,w:34,h:11}, {x:82,y:148,w:34,h:11} ],
+    knobs: [ {cx:132,cy:168}, {cx:140,cy:178} ],
+    bridge: { x:86, y:168, w:26, h:5 },
+    tuners: { l:{y0:8,n:3}, r:{y0:8,n:3}, ySpacing:6 },
+    frets: { ys:[30,40,50,60,70,80,90], x1:90, x2:110 },
+    strings: 6, stringTop: 10,
+    stringBottom: { y:170, spread:[86,92,97,102,107,113] },
+    viewBox: "0 0 200 210",
+  },
+  doublecut: {
+    body: "M52 100 C38 112 40 130 54 138 C40 146 40 166 56 178 C74 192 100 192 116 182 C124 194 146 194 158 180 C170 164 164 142 148 134 C162 122 158 100 140 90 C118 78 96 82 82 92 C70 84 60 90 52 100 Z",
+    headstock: "M90 4 L110 4 C112 4 113 6 112 8 L108 24 L92 24 L88 8 C87 6 88 4 90 4 Z",
+    neck: { x:92, w:16, yTop:24, yBottom:92 },
+    pickups: [ {x:84,y:110,w:30,h:8}, {x:84,y:138,w:30,h:8} ],
+    knobs: [ {cx:134,cy:162}, {cx:144,cy:170}, {cx:128,cy:176} ],
+    bridge: { x:84, y:158, w:28, h:5 },
+    tuners: { l:{y0:8,n:3}, r:{y0:8,n:3}, ySpacing:6 },
+    frets: { ys:[30,40,50,60,70,80], x1:90, x2:110 },
+    strings: 6, stringTop: 10,
+    stringBottom: { y:160, spread:[84,90,96,102,108,114] },
+    viewBox: "0 0 200 210",
+  },
+  bass: {
+    body: "M58 108 C40 118 38 140 54 152 C42 164 46 182 68 190 C92 198 132 194 146 176 C158 160 154 138 138 128 C148 112 132 98 110 98 C90 98 70 100 58 108 Z",
+    headstock: "M88 2 L112 2 C114 2 115 4 114 6 L108 26 L92 26 L86 6 C85 4 86 2 88 2 Z",
+    neck: { x:92, w:16, yTop:26, yBottom:108 },
+    pickups: [ {x:84,y:134,w:32,h:12}, {x:84,y:162,w:32,h:12} ],
+    knobs: [ {cx:132,cy:180} ],
+    bridge: { x:86, y:180, w:24, h:6 },
+    tuners: { l:{y0:8,n:2}, r:{y0:8,n:2}, ySpacing:10 },
+    frets: { ys:[34,46,58,70,82,94], x1:90, x2:110 },
+    strings: 4, stringTop: 12,
+    stringBottom: { y:182, spread:[90,96,104,110] },
+    viewBox: "0 0 200 210",
+  },
+  parlor: {
+    body: "M68 92 C52 96 48 112 56 126 C48 136 48 154 62 164 C78 176 122 176 138 162 C150 150 150 132 140 124 C148 110 142 96 124 92 C110 88 84 88 68 92 Z",
+    headstock: "M92 8 L108 8 C110 8 111 10 111 12 L111 28 L89 28 L89 12 C89 10 90 8 92 8 Z",
+    neck: { x:92, w:16, yTop:28, yBottom:92 },
+    soundhole: { cx:98, cy:128, r:13 },
+    bridge: { x:86, y:146, w:24, h:4 },
+    tuners: { l:{y0:12,n:3}, r:{y0:12,n:3}, ySpacing:5.5 },
+    frets: { ys:[34,43,52,61,70,79], x1:90, x2:110 },
+    strings: 6, stringTop: 14,
+    stringBottom: { y:148, spread:[84,89,94,100,105,110] },
+    viewBox: "0 0 200 210",
+  },
+};
+
+function tunersSVG(side, count, y0, ySpacing, color){
+  const x = side === "l" ? 82 : 118;
+  let s = "";
+  for(let i=0;i<count;i++){
+    s += `<circle cx="${x}" cy="${y0+i*ySpacing}" r="2.6" fill="${color}" fill-opacity="0.85" stroke="none"/>`;
+  }
+  return s;
+}
+function fretsSVG(x1, x2, ys, color){
+  return ys.map(y=>`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="1.2" stroke-opacity="0.35"/>`).join("");
+}
+function stringsSVG(xs, yTop, yBottom, color, widths){
+  return xs.map((x,i)=>`<line x1="${x.top}" y1="${yTop}" x2="${x.bottom}" y2="${yBottom}" stroke="${color}" stroke-opacity="0.75" stroke-width="${widths?widths[i]:1}"/>`).join("");
+}
+
+function guitarMarkSVG(shape, color, className){
+  color = color || "#F3E9D8"; className = className || "";
+  const c = GUITAR_CONFIGS[shape] || GUITAR_CONFIGS.dreadnought;
+  const gradId = "gmg-" + (gradCounter++);
+  const stringXs = c.stringBottom.spread.map(bx => ({ top: 100, bottom: bx }));
+  const stringWidths = c.strings === 6 ? [0.7,0.85,1,1.2,1.5,1.9] : [1,1.4,1.9,2.5];
+
+  let inner = "";
+  inner += `<defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="${color}" stop-opacity="0.28"/>
+    <stop offset="100%" stop-color="${color}" stop-opacity="0.06"/>
+  </linearGradient></defs>`;
+  inner += `<path d="${c.body}" fill="url(#${gradId})"/>`;
+  inner += `<rect x="${c.neck.x}" y="${c.neck.yTop}" width="${c.neck.w}" height="${c.neck.yBottom - c.neck.yTop}" fill="${color}" fill-opacity="0.1" stroke="${color}" stroke-opacity="0.6" stroke-width="1.4"/>`;
+  inner += `<path d="${c.headstock}" fill="${color}" fill-opacity="0.16" stroke-width="1.6"/>`;
+  inner += fretsSVG(c.frets.x1, c.frets.x2, c.frets.ys, color);
+  inner += tunersSVG("l", c.tuners.l.n, c.tuners.l.y0, c.tuners.ySpacing, color);
+  inner += tunersSVG("r", c.tuners.r.n, c.tuners.r.y0, c.tuners.ySpacing, color);
+  if(c.soundhole) inner += `<circle cx="${c.soundhole.cx}" cy="${c.soundhole.cy}" r="${c.soundhole.r}" stroke-width="1.8"/>`;
+  if(c.pickups) inner += c.pickups.map(p=>`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="2" fill="${color}" fill-opacity="0.22" stroke-width="1.4"/>`).join("");
+  if(c.knobs) inner += c.knobs.map(k=>`<circle cx="${k.cx}" cy="${k.cy}" r="3.4" fill="${color}" fill-opacity="0.3" stroke-width="1.2"/>`).join("");
+  inner += `<rect x="${c.bridge.x}" y="${c.bridge.y}" width="${c.bridge.w}" height="${c.bridge.h}" rx="1.5" fill="${color}" fill-opacity="0.4" stroke-width="1"/>`;
+  inner += stringsSVG(stringXs, c.stringTop, c.stringBottom.y, color, stringWidths);
+
+  return `<svg viewBox="${c.viewBox}" class="${className}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${inner}</svg>`;
+}
+
+/* ---------- state ---------- */
+const state = { category: "All", cart: [] };
+
+/* ---------- render: product grid ---------- */
+function renderCategoryPills(){
+  document.getElementById("category-pills").innerHTML = CATEGORIES.map(c =>
+    `<button class="pill ${state.category===c?"active":""}" onclick="setCategory('${c}')">${c}</button>`
+  ).join("");
+}
+function productCardHTML(p){
+  return `
+  <div class="product-card grain-card card-hover">
+    <div class="card-top">
+      <span class="tag-mono font-mono">${p.type}</span>
+      <span class="price-chip font-mono">${formatPrice(p.price)}</span>
+    </div>
+    <div class="card-icon">${guitarMarkSVG(p.shape, p.accent, "")}</div>
+    <h3 class="card-title font-display">${p.name}</h3>
+    <p class="card-blurb">${p.blurb}</p>
+    <p class="card-wood font-mono">${p.wood}</p>
+    <button class="add-cart-btn font-mono btn-brass" onclick="addToCart('${p.id}')">Add to cart</button>
+  </div>`;
+}
+function renderProductGrid(){
+  const filtered = state.category === "All" ? PRODUCTS : PRODUCTS.filter(p=>p.type===state.category);
+  document.getElementById("product-grid").innerHTML = filtered.map(productCardHTML).join("");
+}
+function setCategory(c){ state.category = c; renderCategoryPills(); renderProductGrid(); }
+
+/* ---------- render: process + trust ---------- */
+function renderProcess(){
+  document.getElementById("process-grid").innerHTML = PROCESS.map((s,i)=>`
+    <div class="process-step">
+      <span class="n font-mono">${s.n}</span>
+      <h3 class="font-display">${s.title}</h3>
+      <p>${s.body}</p>
+    </div>`).join("");
+}
+function renderTrust(){
+  const checkSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D9713C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  document.getElementById("trust-grid").innerHTML = TRUST.map(f=>`
+    <div class="trust-item">
+      <div class="head">${checkSvg}<h4 class="font-display">${f.title}</h4></div>
+      <p>${f.body}</p>
+    </div>`).join("");
+}
+
+/* ---------- cart ---------- */
+function openCart(){ document.getElementById("drawer-overlay").classList.add("open"); renderCart(); }
+function closeCart(){ document.getElementById("drawer-overlay").classList.remove("open"); }
+function addToCart(id){
+  const existing = state.cart.find(c=>c.id===id);
+  if(existing) existing.qty += 1; else state.cart.push({ id, qty:1 });
+  const p = PRODUCTS.find(p=>p.id===id);
+  showToast(`Added ${p.name} to your cart`);
+  updateCartBadge();
+  renderCart();
+}
+function changeQty(id, delta){
+  state.cart = state.cart.map(c=>c.id===id ? {...c, qty:c.qty+delta} : c).filter(c=>c.qty>0);
+  updateCartBadge();
+  renderCart();
+}
+function updateCartBadge(){
+  const count = state.cart.reduce((s,c)=>s+c.qty,0);
+  const badge = document.getElementById("cart-badge");
+  badge.textContent = count;
+  badge.style.display = count>0 ? "flex" : "none";
+}
+function renderCart(){
+  const items = state.cart.map(c=>({...c, product: PRODUCTS.find(p=>p.id===c.id)}));
+  const body = document.getElementById("drawer-body");
+  const foot = document.getElementById("drawer-foot");
+  if(items.length===0){
+    body.innerHTML = `<p class="drawer-empty">Nothing in here yet. Go find something worth playing.</p>`;
+    foot.style.display = "none";
+    return;
+  }
+  body.innerHTML = items.map(({id,qty,product})=>`
+    <div class="drawer-item">
+      <div class="thumb">${guitarMarkSVG(product.shape, product.accent, "")}</div>
+      <div class="info">
+        <p class="name font-display">${product.name}</p>
+        <p class="unit font-mono">${formatPrice(product.price)}</p>
+        <div class="qty-control">
+          <button onclick="changeQty('${id}',-1)" aria-label="Decrease quantity">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C89B4A" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <span class="font-mono">${qty}</span>
+          <button onclick="changeQty('${id}',1)" aria-label="Increase quantity">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C89B4A" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`).join("");
+  const total = items.reduce((s,i)=>s+i.product.price*i.qty,0);
+  document.getElementById("drawer-total-value").textContent = formatPrice(total);
+  foot.style.display = "block";
+}
+function checkout(){ showToast("This is a demo — no real checkout here."); }
+
+/* ---------- toast ---------- */
+function showToast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>el.classList.remove("show"), 2200);
+}
+
+/* ---------- init ---------- */
+mountStringDividers();
+document.getElementById("hero-guitar").innerHTML = guitarMarkSVG("singlecut", "#F3E9D8", "");
+renderCategoryPills();
+renderProductGrid();
+renderProcess();
+renderTrust();
+</script>
+</body>
+</html>
 
