@@ -1,1 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SportHub — Play Your Game</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="index.html"><span>SPORT</span>HUB</a>
+    <nav>
+      <a href="shop.html">Shop</a><a href="category.html?cat=Football">Football</a>
+      <a href="category.html?cat=Tennis">Tennis</a><a href="category.html?cat=Cricket">Cricket</a>
+      <a href="category.html?cat=Basketball">Basketball</a><a href="category.html?cat=Badminton">Badminton</a>
+    </nav>
+    <div class="header-actions"><a href="shop.html" aria-label="Search">⌕</a><a href="cart.html">Bag <b class="cart-count">0</b></a></div>
+  </header>
 
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE 2026 COLLECTION</p>
+        <h1>PLAY<br><em>YOUR</em> GAME.</h1>
+        <p>Premium gear for every session, every court and every match.</p>
+        <div class="hero-buttons"><a class="btn btn-light" href="shop.html">Shop all gear</a><a class="text-link" href="#sports">Explore sports →</a></div>
+      </div>
+      <div class="hero-ball">⚽</div>
+    </section>
+
+    <section class="section" id="sports">
+      <div class="section-head"><div><p class="eyebrow">FIND YOUR SPORT</p><h2>Gear up.</h2></div><a class="text-link" href="shop.html">View all →</a></div>
+      <div class="sport-grid">
+        <a class="sport-card football" href="category.html?cat=Football"><span>⚽</span><strong>Football</strong><small>Boots · Balls · Kits</small></a>
+        <a class="sport-card tennis" href="category.html?cat=Tennis"><span>🎾</span><strong>Tennis</strong><small>Rackets · Shoes · Bags</small></a>
+        <a class="sport-card cricket" href="category.html?cat=Cricket"><span>🏏</span><strong>Cricket</strong><small>Bats · Pads · Gloves</small></a>
+        <a class="sport-card basketball" href="category.html?cat=Basketball"><span>🏀</span><strong>Basketball</strong><small>Balls · Shoes · Apparel</small></a>
+        <a class="sport-card badminton" href="category.html?cat=Badminton"><span>🏸</span><strong>Badminton</strong><small>Rackets · Shuttlecocks · Bags</small></a>
+      </div>
+    </section>
+
+    <section class="section products-section">
+      <div class="section-head"><div><p class="eyebrow">EDITOR'S PICKS</p><h2>Best sellers.</h2></div><a class="text-link" href="shop.html">Shop all →</a></div>
+      <div id="featured-products" class="product-grid"></div>
+    </section>
+
+    <section class="promo">
+      <div><p class="eyebrow">WEEKEND READY</p><h2>20% off<br>selected gear.</h2><p>Use code <strong>GAMEON20</strong> at checkout.</p><a class="btn btn-dark" href="shop.html">Shop the offer</a></div>
+      <div class="promo-orbit">★</div>
+    </section>
+
+    <section class="section service-grid">
+      <div><b>FREE DELIVERY</b><span>On orders over £75</span></div>
+      <div><b>30-DAY RETURNS</b><span>Easy, no-hassle returns</span></div>
+      <div><b>SECURE CHECKOUT</b><span>Safe and encrypted payments</span></div>
+      <div><b>SPORTS EXPERTS</b><span>Advice from people who play</span></div>
+    </section>
+  </main>
+
+  <footer><div><a class="logo" href="index.html"><span>SPORT</span>HUB</a><p>Serious gear. Better play.</p></div><div><b>Shop</b><a href="shop.html">All products</a><a href="category.html?cat=Football">Football</a><a href="category.html?cat=Tennis">Tennis</a></div><div><b>More</b><a href="#">About us</a><a href="#">Delivery</a><a href="#">Returns</a></div><div><b>Stay in the game</b><p>Get drops, offers and training tips.</p><div class="subscribe"><input placeholder="Email address"><button>→</button></div></div></footer>
+  <script src="assets/app.js"></script>
+  <script>renderProducts("featured-products", products.slice(0,4));</script>
+</body>
+</html>
